@@ -323,6 +323,47 @@
   .ai-feature h4 { font-size: 16px; font-weight: 600; color: #C084FC; margin-bottom: 4px; }
   .ai-feature p { font-size: 13px; color: var(--gray); line-height: 1.5; }
 
+  /* Matrix background */
+  .matrix-bg {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    background: linear-gradient(180deg, #05000d 0%, #0a0015 40%, #0d001a 100%);
+  }
+  .matrix-bg canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+
+  /* Dev tool square cards */
+  .dev-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 16px;
+  }
+  .dev-card {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 20px 16px; border-radius: 16px;
+    background: rgba(139,92,246,.06);
+    border: 1px solid rgba(139,92,246,.25);
+    backdrop-filter: blur(6px);
+    transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    cursor: default;
+  }
+  .dev-card:hover {
+    background: rgba(139,92,246,.14);
+    border-color: rgba(192,132,252,.55);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 0 24px rgba(139,92,246,.25), 0 0 48px rgba(139,92,246,.08);
+  }
+  .dev-card .dev-icon {
+    font-size: 36px; margin-bottom: 12px;
+  }
+  .dev-card h4 {
+    font-size: 15px; font-weight: 700; color: #C084FC; margin-bottom: 8px;
+  }
+  .dev-card p {
+    font-size: 11.5px; color: rgba(255,255,255,.6); line-height: 1.5;
+  }
+  .dev-card a { color: #A78BFA; text-decoration: none; font-weight: 600; }
+  .dev-card a:hover { text-decoration: underline; color: #C084FC; }
+
   .timeline {
     display: flex; flex-direction: column; gap: 14px; margin-top: 20px;
   }
@@ -986,42 +1027,33 @@
   </div>
 
   <!-- ═══ SLIDE 11: AI Dev Tools ═══ -->
-  <div class="slide" data-label="AI FOR DEVELOPERS">
-    <div class="bg-purple"></div>
-    <div class="purple-mesh"><div class="strand strand-1"></div><div class="strand strand-2"></div><div class="strand strand-3"></div><div class="strand strand-4"></div></div>
-    <div class="grid-purple"></div>
+  <div class="slide" data-label="AI FOR DEVELOPERS" id="slide-matrix">
+    <div class="matrix-bg"><canvas id="matrixCanvas"></canvas></div>
     <div class="slide-content">
       <div class="badge badge-purple anim-1">Developer Tools</div>
       <h2 class="anim-2">Shopify <span style="color:#C084FC;">AI Dev Tools</span></h2>
       <p class="subtitle anim-3">Dramatically accelerate Shopify development with AI-powered tooling</p>
-      <div style="margin-top:12px;">
-        <div class="ai-feature anim-4">
-          <div class="ai-icon">🤖</div>
-          <div>
-            <h4>Shopify dev-mcp</h4>
-            <p>Connect your AI coding assistant (Cursor, Claude, Copilot) directly to the Shopify platform. Get contextual code suggestions, scaffold themes and apps, query store data, and debug issues — all from your development environment. <a href="https://dev.shopify.com/" target="_blank" style="color:#A78BFA;">dev.shopify.com</a></p>
-          </div>
+      <div class="dev-grid">
+        <div class="dev-card anim-4">
+          <div class="dev-icon">🤖</div>
+          <h4>Shopify dev-mcp</h4>
+          <p>Connect AI coding assistants directly to Shopify. Contextual code suggestions, scaffolding, store data queries, and debugging from your IDE.</p>
+          <p style="margin-top:6px;"><a href="https://dev.shopify.com/" target="_blank">dev.shopify.com</a></p>
         </div>
-        <div class="ai-feature anim-5">
-          <div class="ai-icon">🔗</div>
-          <div>
-            <h4>GitHub Integration</h4>
-            <p>Seamless version control with native GitHub connectivity. Push theme and app code directly from your IDE, manage branches for staging vs. production, and automate deployments with CI/CD pipelines.</p>
-          </div>
+        <div class="dev-card anim-5">
+          <div class="dev-icon">🔗</div>
+          <h4>GitHub Integration</h4>
+          <p>Native GitHub connectivity. Push theme and app code, manage branches for staging vs. production, and automate CI/CD deployments.</p>
         </div>
-        <div class="ai-feature anim-6">
-          <div class="ai-icon">⌨️</div>
-          <div>
-            <h4>Shopify CLI</h4>
-            <p>The command-line interface for building Shopify apps, themes, and Hydrogen storefronts. Scaffold new projects, run local dev servers, generate extensions, and deploy — all from your terminal.</p>
-          </div>
+        <div class="dev-card anim-6">
+          <div class="dev-icon">⌨️</div>
+          <h4>Shopify CLI</h4>
+          <p>Build apps, themes, and Hydrogen storefronts. Scaffold projects, run local dev servers, generate extensions, and deploy from your terminal.</p>
         </div>
-        <div class="ai-feature anim-7">
-          <div class="ai-icon">⚗️</div>
-          <div>
-            <h4>Hydrogen & Oxygen</h4>
-            <p>Shopify's headless React framework (Hydrogen) and global hosting platform (Oxygen) for building custom storefronts. Full control over the frontend with Shopify's backend powering commerce.</p>
-          </div>
+        <div class="dev-card anim-7">
+          <div class="dev-icon">⚗️</div>
+          <h4>Hydrogen & Oxygen</h4>
+          <p>Headless React framework and global hosting platform. Full frontend control with Shopify's commerce backend powering everything.</p>
         </div>
       </div>
     </div>
@@ -1202,6 +1234,47 @@
       card.classList.toggle('border-active');
     });
   });
+
+  (function initMatrix() {
+    const canvas = document.getElementById('matrixCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF@#$%&*+=<>{}[]|/\\~^ΣΩΔΨΞΛφθ∞≈∂∫';
+    const fontSize = 14;
+    let columns, drops;
+
+    function resize() {
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array.from({ length: columns }, () => Math.random() * -100);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(5,0,13,0.06)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < columns; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        const brightness = 0.3 + Math.random() * 0.7;
+        ctx.font = fontSize + 'px monospace';
+        ctx.fillStyle = `rgba(192,132,252,${brightness})`;
+        if (Math.random() > 0.92) ctx.fillStyle = `rgba(255,255,255,${brightness})`;
+        ctx.fillText(ch, x, y);
+        ctx.fillStyle = `rgba(139,92,246,${brightness * 0.5})`;
+        ctx.fillText(ch, x, y - fontSize);
+        ctx.fillStyle = `rgba(109,40,217,${brightness * 0.25})`;
+        ctx.fillText(ch, x, y - fontSize * 2);
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.5 + Math.random() * 0.5;
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
 </script>
 </body>
 </html>
