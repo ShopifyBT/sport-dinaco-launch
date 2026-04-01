@@ -1369,10 +1369,11 @@
       ctx.closePath();
     }
 
-    for (let i = 0; i < 56; i++) {
-      stars.push({
+    function makeStar(scattered) {
+      const lifespan = (7 + Math.random() * 8) * 60;
+      return {
         x: Math.random() * 2000,
-        y: Math.random() * 1400,
+        y: scattered ? Math.random() * 1400 : H + 10 + Math.random() * 100,
         size: 8 + Math.random() * 28,
         speed: 0.19 + Math.random() * 0.44,
         rot: Math.random() * Math.PI * 2,
@@ -1380,36 +1381,44 @@
         wobbleAmp: 20 + Math.random() * 40,
         wobbleFreq: 0.00375 + Math.random() * 0.00625,
         wobbleOffset: Math.random() * 1000,
-        alpha: 0.2 + Math.random() * 0.5,
+        maxAlpha: 0.12 + Math.random() * 0.35,
         baseX: Math.random() * 2000,
-        t: Math.random() * 10000
-      });
+        t: Math.random() * 10000,
+        life: scattered ? Math.random() * lifespan : 0,
+        lifespan: lifespan
+      };
     }
+    for (let i = 0; i < 56; i++) stars.push(makeStar(true));
 
     function draw() {
       requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
-      for (const s of stars) {
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
         s.t += 1;
+        s.life += 1;
         s.y -= s.speed;
         s.rot += s.rotSpeed;
         s.x = s.baseX + Math.sin(s.t * s.wobbleFreq + s.wobbleOffset) * s.wobbleAmp;
-        if (s.y < -s.size * 2) {
-          s.y = H + s.size * 2 + Math.random() * 100;
-          s.baseX = Math.random() * W;
-          s.x = s.baseX;
-          s.t = Math.random() * 10000;
+        const fadeInEnd = 60;
+        const fadeOutStart = s.lifespan - 90;
+        let opacity = s.maxAlpha;
+        if (s.life < fadeInEnd) opacity = s.maxAlpha * (s.life / fadeInEnd);
+        else if (s.life > fadeOutStart) opacity = s.maxAlpha * Math.max(0, (s.lifespan - s.life) / 90);
+        if (s.life >= s.lifespan || s.y < -s.size * 2) {
+          stars[i] = makeStar(false);
+          continue;
         }
         const innerR = s.size * 0.3;
         ctx.save();
         fourPointStar(s.x, s.y, s.size, innerR, s.rot);
         const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
-        grad.addColorStop(0, `rgba(216,180,254,${s.alpha})`);
-        grad.addColorStop(0.5, `rgba(192,132,252,${s.alpha * 0.7})`);
-        grad.addColorStop(1, `rgba(139,92,246,${s.alpha * 0.25})`);
+        grad.addColorStop(0, `rgba(180,148,230,${opacity})`);
+        grad.addColorStop(0.5, `rgba(152,108,220,${opacity * 0.65})`);
+        grad.addColorStop(1, `rgba(120,70,200,${opacity * 0.2})`);
         ctx.fillStyle = grad;
-        ctx.shadowColor = 'rgba(192,132,252,0.45)';
-        ctx.shadowBlur = s.size * 1.8;
+        ctx.shadowColor = `rgba(160,120,230,${opacity * 0.6})`;
+        ctx.shadowBlur = s.size * 1.5;
         ctx.fill();
         ctx.restore();
       }
