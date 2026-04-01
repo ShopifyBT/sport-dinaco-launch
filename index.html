@@ -436,7 +436,12 @@
     position: absolute; inset: 0; z-index: 0; overflow: hidden;
     background: linear-gradient(180deg, #0a0015 0%, #0d001a 50%, #05000d 100%);
   }
-  .stars-bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stars-bg canvas, .rockets-bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  .rockets-bg {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    background: linear-gradient(180deg, #0a0015 0%, #0d001a 50%, #05000d 100%);
+  }
 
   .matrix-toggle {
     position: absolute; bottom: 18px; right: 24px; z-index: 10;
@@ -1250,11 +1255,9 @@
     </div>
   </div>
 
-  <!-- ═══ SLIDE 10: Close ═══ -->
+  <!-- ═══ SLIDE 14: Close ═══ -->
   <div class="slide" data-label="LET'S BUILD">
-    <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
-    <div class="bg-grid"></div>
-    <div class="particles"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="rockets-bg"><canvas id="rocketsCanvas"></canvas></div>
     <div class="slide-content" style="text-align:center;">
       <div class="badge badge-green anim-1">Let's Go</div>
       <h1 class="anim-2" style="font-size:52px;">Let's Build<br><span class="accent-lime">Something Great</span></h1>
@@ -1481,6 +1484,113 @@
       toggle.title = running ? 'Pause animation' : 'Play animation';
       if (running) raf = requestAnimationFrame(draw);
     });
+  })();
+
+  (function initRockets() {
+    const canvas = document.getElementById('rocketsCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, rockets = [];
+
+    function resize() {
+      W = canvas.width = canvas.parentElement.offsetWidth;
+      H = canvas.height = canvas.parentElement.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawRocket(cx, cy, size, angle, opacity) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      ctx.globalAlpha = opacity;
+
+      ctx.beginPath();
+      ctx.moveTo(0, -size * 1.6);
+      ctx.quadraticCurveTo(size * 0.5, -size * 0.8, size * 0.4, 0);
+      ctx.lineTo(size * 0.7, size * 0.4);
+      ctx.lineTo(size * 0.3, size * 0.2);
+      ctx.lineTo(0, size * 0.6);
+      ctx.lineTo(-size * 0.3, size * 0.2);
+      ctx.lineTo(-size * 0.7, size * 0.4);
+      ctx.lineTo(-size * 0.4, 0);
+      ctx.quadraticCurveTo(-size * 0.5, -size * 0.8, 0, -size * 1.6);
+      ctx.closePath();
+
+      const grad = ctx.createLinearGradient(0, -size * 1.6, 0, size * 0.6);
+      grad.addColorStop(0, 'rgba(200,170,245,0.9)');
+      grad.addColorStop(0.4, 'rgba(160,120,230,0.7)');
+      grad.addColorStop(1, 'rgba(120,70,200,0.4)');
+      ctx.fillStyle = grad;
+      ctx.shadowColor = 'rgba(160,120,230,0.5)';
+      ctx.shadowBlur = size * 2;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.ellipse(0, -size * 0.6, size * 0.15, size * 0.2, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(220,200,255,0.8)';
+      ctx.shadowBlur = 0;
+      ctx.fill();
+
+      const flicker = 0.6 + Math.random() * 0.4;
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.2, size * 0.5);
+      ctx.quadraticCurveTo(0, size * (0.9 + Math.random() * 0.5), size * 0.2, size * 0.5);
+      ctx.fillStyle = `rgba(200,140,255,${0.5 * flicker})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.1, size * 0.5);
+      ctx.quadraticCurveTo(0, size * (0.7 + Math.random() * 0.3), size * 0.1, size * 0.5);
+      ctx.fillStyle = `rgba(230,200,255,${0.6 * flicker})`;
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function makeRocket(scattered) {
+      const lifespan = (15 + Math.random() * 15) * 60;
+      return {
+        x: Math.random() * 2000,
+        y: scattered ? Math.random() * 1400 : H + 30 + Math.random() * 100,
+        size: 10 + Math.random() * 18,
+        speed: 0.19 + Math.random() * 0.44,
+        rot: -0.15 + Math.random() * 0.3,
+        rotSpeed: (0.001 + Math.random() * 0.003) * (Math.random() > 0.5 ? 1 : -1),
+        wobbleAmp: 20 + Math.random() * 40,
+        wobbleFreq: 0.00375 + Math.random() * 0.00625,
+        wobbleOffset: Math.random() * 1000,
+        maxAlpha: 0.12 + Math.random() * 0.35,
+        baseX: Math.random() * 2000,
+        t: Math.random() * 10000,
+        life: scattered ? Math.random() * lifespan : 0,
+        lifespan: lifespan
+      };
+    }
+    for (let i = 0; i < 56; i++) rockets.push(makeRocket(true));
+
+    function draw() {
+      requestAnimationFrame(draw);
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < rockets.length; i++) {
+        const r = rockets[i];
+        r.t += 1;
+        r.life += 1;
+        r.y -= r.speed;
+        r.rot += r.rotSpeed;
+        r.x = r.baseX + Math.sin(r.t * r.wobbleFreq + r.wobbleOffset) * r.wobbleAmp;
+        const fadeInEnd = 60;
+        const fadeOutStart = r.lifespan - 90;
+        let opacity = r.maxAlpha;
+        if (r.life < fadeInEnd) opacity = r.maxAlpha * (r.life / fadeInEnd);
+        else if (r.life > fadeOutStart) opacity = r.maxAlpha * Math.max(0, (r.lifespan - r.life) / 90);
+        if (r.life >= r.lifespan || r.y < -r.size * 3) {
+          rockets[i] = makeRocket(false);
+          continue;
+        }
+        drawRocket(r.x, r.y, r.size, r.rot, opacity);
+      }
+    }
+    draw();
   })();
 </script>
 </body>
