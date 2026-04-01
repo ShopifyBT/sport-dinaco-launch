@@ -1176,9 +1176,7 @@
 
   <!-- ═══ SLIDE 12: Key Resources ═══ -->
   <div class="slide" data-label="KEY RESOURCES">
-    <div class="bg-purple"></div>
-    <div class="purple-mesh"><div class="strand strand-1"></div><div class="strand strand-2"></div><div class="strand strand-3"></div><div class="strand strand-4"></div></div>
-    <div class="diamond-float"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="rockets-bg"><canvas id="rocketsCanvas2"></canvas></div>
     <div class="slide-content">
       <div class="badge badge-purple anim-1">Support</div>
       <h2 class="anim-2">Key <span style="color:#C084FC;">Resources</span></h2>
@@ -1486,8 +1484,8 @@
     });
   })();
 
-  (function initRockets() {
-    const canvas = document.getElementById('rocketsCanvas');
+  function initRockets(canvasId) {
+    const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let W, H, rockets = [];
@@ -1554,8 +1552,8 @@
         y: scattered ? Math.random() * 1400 : H + 30 + Math.random() * 100,
         size: 10 + Math.random() * 18,
         speed: 0.19 + Math.random() * 0.44,
-        rot: -0.15 + Math.random() * 0.3,
-        rotSpeed: (0.001 + Math.random() * 0.003) * (Math.random() > 0.5 ? 1 : -1),
+        rot: [-20, 0, 20][Math.floor(Math.random() * 3)] * Math.PI / 180,
+        rotSpeed: 0,
         wobbleAmp: 20 + Math.random() * 40,
         wobbleFreq: 0.00375 + Math.random() * 0.00625,
         wobbleOffset: Math.random() * 1000,
@@ -1591,7 +1589,9 @@
       }
     }
     draw();
-  })();
+  }
+  initRockets('rocketsCanvas');
+  initRockets('rocketsCanvas2');
 </script>
 </body>
 </html>
