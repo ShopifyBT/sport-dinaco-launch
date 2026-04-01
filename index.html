@@ -1369,18 +1369,18 @@
       ctx.closePath();
     }
 
-    for (let i = 0; i < 28; i++) {
+    for (let i = 0; i < 56; i++) {
       stars.push({
         x: Math.random() * 2000,
-        y: Math.random() * 1200 + 1200,
+        y: Math.random() * 1400,
         size: 8 + Math.random() * 28,
-        speed: 0.15 + Math.random() * 0.35,
+        speed: 0.19 + Math.random() * 0.44,
         rot: Math.random() * Math.PI * 2,
-        rotSpeed: (0.002 + Math.random() * 0.006) * (Math.random() > 0.5 ? 1 : -1),
+        rotSpeed: (0.0025 + Math.random() * 0.0075) * (Math.random() > 0.5 ? 1 : -1),
         wobbleAmp: 20 + Math.random() * 40,
-        wobbleFreq: 0.003 + Math.random() * 0.005,
+        wobbleFreq: 0.00375 + Math.random() * 0.00625,
         wobbleOffset: Math.random() * 1000,
-        alpha: 0.08 + Math.random() * 0.25,
+        alpha: 0.2 + Math.random() * 0.5,
         baseX: Math.random() * 2000,
         t: Math.random() * 10000
       });
@@ -1404,12 +1404,12 @@
         ctx.save();
         fourPointStar(s.x, s.y, s.size, innerR, s.rot);
         const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size);
-        grad.addColorStop(0, `rgba(192,132,252,${s.alpha})`);
-        grad.addColorStop(0.5, `rgba(139,92,246,${s.alpha * 0.6})`);
-        grad.addColorStop(1, `rgba(109,40,217,${s.alpha * 0.15})`);
+        grad.addColorStop(0, `rgba(216,180,254,${s.alpha})`);
+        grad.addColorStop(0.5, `rgba(192,132,252,${s.alpha * 0.7})`);
+        grad.addColorStop(1, `rgba(139,92,246,${s.alpha * 0.25})`);
         ctx.fillStyle = grad;
-        ctx.shadowColor = 'rgba(167,139,250,0.3)';
-        ctx.shadowBlur = s.size * 1.5;
+        ctx.shadowColor = 'rgba(192,132,252,0.45)';
+        ctx.shadowBlur = s.size * 1.8;
         ctx.fill();
         ctx.restore();
       }
