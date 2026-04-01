@@ -366,9 +366,10 @@
 
   .slide-split {
     display: flex; gap: 36px; width: 100%; position: relative; z-index: 1;
+    align-items: stretch;
   }
   .slide-split .split-left { flex: 1; min-width: 0; }
-  .slide-split .split-right { width: 340px; flex-shrink: 0; }
+  .slide-split .split-right { width: 340px; flex-shrink: 0; display: flex; flex-direction: column; }
 
   .sidekick-chat {
     background: rgba(15,10,25,.85); border: 1px solid rgba(139,92,246,.25);
@@ -1071,12 +1072,12 @@
     <div class="purple-mesh"><div class="strand strand-1"></div><div class="strand strand-2"></div><div class="strand strand-3"></div><div class="strand strand-4"></div></div>
     <div class="diamond-float"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     <div class="slide-content">
-      <div class="badge badge-purple anim-1">No Code Required</div>
-      <h2 class="anim-2">Shopify <span style="color:#C084FC;">Sidekick & AI</span></h2>
-      <p class="subtitle anim-3">Built into the Shopify Admin — for marketing, sales, and operations teams</p>
-      <div class="slide-split anim-4">
+      <div class="slide-split">
         <div class="split-left">
-          <div class="card-grid cols-2" style="margin-top:16px;">
+          <div class="badge badge-purple anim-1">No Code Required</div>
+          <h2 class="anim-2">Shopify <span style="color:#C084FC;">Sidekick & AI</span></h2>
+          <p class="subtitle anim-3">Built into the Shopify Admin — for marketing, sales, and operations teams</p>
+          <div class="card-grid cols-2 anim-4" style="margin-top:16px;">
             <div class="resource-card" style="text-align:center;">
               <img src="assets/sidekick-logo.png" alt="Sidekick" style="height:44px;width:auto;margin-bottom:8px;">
               <h3>Sidekick AI</h3>
