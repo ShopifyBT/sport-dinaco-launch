@@ -364,6 +364,73 @@
   .dev-card a { color: #A78BFA; text-decoration: none; font-weight: 600; }
   .dev-card a:hover { text-decoration: underline; color: #C084FC; }
 
+  .slide-split {
+    display: flex; gap: 36px; width: 100%; position: relative; z-index: 1;
+  }
+  .slide-split .split-left { flex: 1; min-width: 0; }
+  .slide-split .split-right { width: 340px; flex-shrink: 0; }
+
+  .sidekick-chat {
+    background: rgba(15,10,25,.85); border: 1px solid rgba(139,92,246,.25);
+    border-radius: 16px; overflow: hidden; backdrop-filter: blur(10px);
+    display: flex; flex-direction: column; height: 100%;
+  }
+  .sk-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid rgba(139,92,246,.15);
+    background: rgba(139,92,246,.06);
+  }
+  .sk-header img { height: 22px; width: auto; }
+  .sk-header span { font-size: 13px; font-weight: 600; color: #C084FC; }
+  .sk-header .sk-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; margin-left: auto; }
+  .sk-messages { flex: 1; padding: 14px 14px 10px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .sk-msg {
+    max-width: 90%; padding: 10px 13px; border-radius: 12px;
+    font-size: 12px; line-height: 1.55; animation: sk-fade-in 0.5s ease both;
+  }
+  .sk-msg.user {
+    align-self: flex-end; background: rgba(139,92,246,.2); border: 1px solid rgba(139,92,246,.3);
+    color: #e2ddf5; border-bottom-right-radius: 4px;
+  }
+  .sk-msg.bot {
+    align-self: flex-start; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.8); border-bottom-left-radius: 4px;
+  }
+  .sk-msg.bot strong { color: #C084FC; }
+  .sk-typing {
+    align-self: flex-start; padding: 10px 16px;
+    display: flex; gap: 4px; align-items: center;
+  }
+  .sk-typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: rgba(167,139,250,.5);
+    animation: sk-bounce 1.2s ease-in-out infinite;
+  }
+  .sk-typing span:nth-child(2) { animation-delay: 0.15s; }
+  .sk-typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes sk-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+  @keyframes sk-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .sk-input {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-top: 1px solid rgba(139,92,246,.12);
+    background: rgba(0,0,0,.2);
+  }
+  .sk-input-field {
+    flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(139,92,246,.15);
+    border-radius: 8px; padding: 8px 12px; color: rgba(255,255,255,.4);
+    font-size: 11.5px; font-family: inherit;
+  }
+  .sk-send {
+    width: 28px; height: 28px; border-radius: 6px; border: none;
+    background: rgba(139,92,246,.3); color: #C084FC; font-size: 13px;
+    cursor: default; display: flex; align-items: center; justify-content: center;
+  }
+
   .matrix-toggle {
     position: absolute; bottom: 18px; right: 24px; z-index: 10;
     width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(139,92,246,.3);
@@ -1007,33 +1074,57 @@
       <div class="badge badge-purple anim-1">No Code Required</div>
       <h2 class="anim-2">Shopify <span style="color:#C084FC;">Sidekick & AI</span></h2>
       <p class="subtitle anim-3">Built into the Shopify Admin — for marketing, sales, and operations teams</p>
-      <div class="card-grid cols-3 anim-4" style="margin-top:16px;">
-        <div class="resource-card" style="text-align:center;">
-          <img src="assets/sidekick-logo.png" alt="Sidekick" style="height:52px;width:auto;margin-bottom:10px;">
-          <h3>Sidekick AI Assistant</h3>
-          <p>Ask questions in plain language — generate reports, create discounts, build email campaigns, and modify your storefront without writing code.</p>
+      <div class="slide-split anim-4">
+        <div class="split-left">
+          <div class="card-grid cols-2" style="margin-top:16px;">
+            <div class="resource-card" style="text-align:center;">
+              <img src="assets/sidekick-logo.png" alt="Sidekick" style="height:44px;width:auto;margin-bottom:8px;">
+              <h3>Sidekick AI</h3>
+              <p>Ask questions in plain language — generate reports, create discounts, and modify your storefront without code.</p>
+            </div>
+            <div class="resource-card">
+              <span class="rc-icon">✍️</span>
+              <h3>AI Content</h3>
+              <p>Generate product descriptions, email copy, and marketing content. Auto-translate for bilingual EN/FR catalogs.</p>
+            </div>
+            <div class="resource-card">
+              <span class="rc-icon">🔍</span>
+              <h3>Semantic Search</h3>
+              <p>AI-powered search that understands natural language, typos, and synonyms with personalized recommendations.</p>
+            </div>
+            <div class="resource-card">
+              <span class="rc-icon">⚡</span>
+              <h3>Shopify Flow</h3>
+              <p>Visual workflow builder — tag orders, send reorder reminders, route approvals, and manage inventory alerts.</p>
+            </div>
+            <div class="resource-card">
+              <span class="rc-icon">🛡️</span>
+              <h3>Help Center</h3>
+              <p>Instant answers with 24/7 Plus support. <a href="https://help.shopify.com/support/plus" target="_blank">Plus Support</a></p>
+            </div>
+          </div>
         </div>
-        <div class="resource-card">
-          <span class="rc-icon">✍️</span>
-          <h3>AI Content Generation</h3>
-          <p>Generate and refine product descriptions, email copy, and marketing content. Adjust tone for B2B or D2C. Auto-translate for bilingual EN/FR catalogs.</p>
-        </div>
-        <div class="resource-card">
-          <span class="rc-icon">🔍</span>
-          <h3>Semantic Search</h3>
-          <p>AI-powered storefront search that understands natural language, typos, and synonyms. Personalized recommendations that learn from buyer behavior in real time.</p>
-        </div>
-      </div>
-      <div class="card-grid cols-2 anim-5" style="margin-top:16px;max-width:740px;margin-left:auto;margin-right:auto;">
-        <div class="resource-card">
-          <span class="rc-icon">⚡</span>
-          <h3>Shopify Flow Automations</h3>
-          <p>Visual workflow builder — tag high-value orders, send reorder reminders, route quote approvals, and manage inventory alerts without developer involvement.</p>
-        </div>
-        <div class="resource-card">
-          <span class="rc-icon">🛡️</span>
-          <h3>Help Center Assistant</h3>
-          <p>Instant answers to platform questions with direct escalation to Shopify Plus 24/7 support. <a href="https://help.shopify.com/support/plus" target="_blank">help.shopify.com/support/plus</a></p>
+        <div class="split-right anim-5">
+          <div class="sidekick-chat">
+            <div class="sk-header">
+              <img src="assets/sidekick-logo.png" alt="Sidekick">
+              <span>Sidekick</span>
+              <div class="sk-dot"></div>
+            </div>
+            <div class="sk-messages">
+              <div class="sk-msg user" style="animation-delay:0.2s;">How do I A/B test a new homepage hero banner without affecting our live site?</div>
+              <div class="sk-msg bot" style="animation-delay:0.6s;">Great question! You can use <strong>Rollouts</strong> — Shopify's native A/B testing tool. Here's how:<br><br>1. Go to <strong>Online Store → Themes</strong><br>2. Click <strong>"Create rollout"</strong><br>3. Set a traffic split (e.g. 25% see the new version)<br>4. Edit the hero banner in the theme editor — changes only apply to the rollout</div>
+              <div class="sk-msg user" style="animation-delay:1.2s;">Can I schedule when it goes live?</div>
+              <div class="sk-msg bot" style="animation-delay:1.7s;">Yes! You can <strong>schedule rollouts</strong> to start and end at specific dates and times. Your live store stays completely untouched until you choose to publish. You can also run <strong>multiple rollouts simultaneously</strong>.</div>
+              <div class="sk-msg user" style="animation-delay:2.3s;">What else can we test with Rollouts?</div>
+              <div class="sk-msg bot" style="animation-delay:2.8s;">You can test <strong>any theme-level change</strong>: layouts, sections, content blocks, CTAs, product page structure, collection pages, and navigation. Shopify handles the traffic splitting automatically and keeps visitors consistent during their session.</div>
+              <div class="sk-typing" style="animation-delay:3.4s;"><span></span><span></span><span></span></div>
+            </div>
+            <div class="sk-input">
+              <div class="sk-input-field">Ask Sidekick anything…</div>
+              <div class="sk-send">↑</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
