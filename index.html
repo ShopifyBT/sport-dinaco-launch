@@ -364,6 +364,19 @@
   .dev-card a { color: #A78BFA; text-decoration: none; font-weight: 600; }
   .dev-card a:hover { text-decoration: underline; color: #C084FC; }
 
+  .matrix-toggle {
+    position: absolute; bottom: 18px; right: 24px; z-index: 10;
+    width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(139,92,246,.3);
+    background: rgba(10,0,21,.6); backdrop-filter: blur(6px);
+    color: rgba(192,132,252,.7); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+  }
+  .matrix-toggle:hover {
+    background: rgba(139,92,246,.15); border-color: rgba(167,139,250,.5);
+    color: #C084FC;
+  }
+
   .timeline {
     display: flex; flex-direction: column; gap: 14px; margin-top: 20px;
   }
@@ -1029,6 +1042,7 @@
   <!-- ═══ SLIDE 11: AI Dev Tools ═══ -->
   <div class="slide" data-label="AI FOR DEVELOPERS" id="slide-matrix">
     <div class="matrix-bg"><canvas id="matrixCanvas"></canvas></div>
+    <button class="matrix-toggle" id="matrixToggle" title="Pause animation">❚❚</button>
     <div class="slide-content">
       <div class="badge badge-purple anim-1">Developer Tools</div>
       <h2 class="anim-2">Shopify <span style="color:#C084FC;">AI Dev Tools</span></h2>
@@ -1237,11 +1251,12 @@
 
   (function initMatrix() {
     const canvas = document.getElementById('matrixCanvas');
+    const toggle = document.getElementById('matrixToggle');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF@#$%&*+=<>{}[]|/\\~^ΣΩΔΨΞΛφθ∞≈∂∫';
     const fontSize = 14;
-    let columns, drops;
+    let columns, drops, running = true, raf;
 
     function resize() {
       canvas.width = canvas.parentElement.offsetWidth;
@@ -1252,28 +1267,43 @@
     resize();
     window.addEventListener('resize', resize);
 
-    function draw() {
-      ctx.fillStyle = 'rgba(5,0,13,0.06)';
+    let lastTime = 0;
+    const interval = 65;
+
+    function draw(ts) {
+      if (!running) return;
+      raf = requestAnimationFrame(draw);
+      if (ts - lastTime < interval) return;
+      lastTime = ts;
+
+      ctx.fillStyle = 'rgba(5,0,13,0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < columns; i++) {
         const ch = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
-        const brightness = 0.3 + Math.random() * 0.7;
+        const brightness = 0.15 + Math.random() * 0.4;
         ctx.font = fontSize + 'px monospace';
-        ctx.fillStyle = `rgba(192,132,252,${brightness})`;
-        if (Math.random() > 0.92) ctx.fillStyle = `rgba(255,255,255,${brightness})`;
+        ctx.fillStyle = `rgba(167,139,250,${brightness})`;
+        if (Math.random() > 0.94) ctx.fillStyle = `rgba(230,220,255,${brightness + 0.15})`;
         ctx.fillText(ch, x, y);
-        ctx.fillStyle = `rgba(139,92,246,${brightness * 0.5})`;
+        ctx.fillStyle = `rgba(124,58,237,${brightness * 0.35})`;
         ctx.fillText(ch, x, y - fontSize);
-        ctx.fillStyle = `rgba(109,40,217,${brightness * 0.25})`;
+        ctx.fillStyle = `rgba(88,28,180,${brightness * 0.15})`;
         ctx.fillText(ch, x, y - fontSize * 2);
-        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i] += 0.5 + Math.random() * 0.5;
+        if (y > canvas.height && Math.random() > 0.98) drops[i] = 0;
+        drops[i] += 0.3 + Math.random() * 0.35;
       }
-      requestAnimationFrame(draw);
     }
-    draw();
+    raf = requestAnimationFrame(draw);
+
+    toggle.addEventListener('click', e => {
+      e.stopPropagation();
+      running = !running;
+      toggle.textContent = running ? '❚❚' : '▶';
+      toggle.title = running ? 'Pause animation' : 'Play animation';
+      if (running) raf = requestAnimationFrame(draw);
+    });
   })();
 </script>
 </body>
